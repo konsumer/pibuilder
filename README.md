@@ -15,18 +15,24 @@ Make a file called `buildsdl.sh` in current dir:
 ```sh
 #!/bin/bash
 
-cd /pi/tmp
+# this will build pi framebuffer optimized SDL
+
+mkdir -p /pi/work/out
+cd /pi/work/out
 wget https://www.libsdl.org/release/SDL2-2.0.14.tar.gz
 tar -xvzf SDL2-2.0.14.tar.gz
-chroot /pi apt build-dep -y libsdl2
-chroot /pi apt install -y --no-install-recommends
-chroot /pi 'cd /tmp/SDL2-2.0.14 && DEB_CONFIGURE_EXTRA_FLAGS="--enable-video-kmsdrm --host=armv7l-raspberry-linux-gnueabihf --disable-pulseaudio --disable-esd --disable-video-mir --disable-video-wayland --disable-video-x11 --disable-video-opengl" dpkg-buildpackage -us -uc -j4'
-mkdir -p /work/out
-mv /pi/tmp/libsdl*.deb /work/out
+
+cat << EOF | chroot /pi
+apt update
+apt build-dep -y libsdl2
+cd /work/out/SDL2-2.0.14
+DEB_CONFIGURE_EXTRA_FLAGS="--enable-video-kmsdrm --host=armv7l-raspberry-linux-gnueabihf --disable-pulseaudio --disable-esd --disable-video-mir --disable-video-wayland --disable-video-x11 --disable-video-opengl" dpkg-buildpackage -us -uc -j4
+EOF
 ```
 
 ```sh
-docker run -v ${PWD}:/work --rm -it konsumer/pibuilder buildsdl.sh
+chmod +x buildsdl.sh
+docker run -v ${PWD}:/pi/work --rm -it konsumer/pibuilder /pi/work/buildsdl.sh
 ```
 
 ## notes
