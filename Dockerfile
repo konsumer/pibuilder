@@ -8,5 +8,7 @@ RUN wget http://archive.raspbian.org/raspbian.public.key -O - | apt-key add -q &
   qemu-debootstrap --keyring=/etc/apt/trusted.gpg --arch armhf buster /pi http://mirrordirector.raspbian.org/raspbian/
 RUN chroot /pi apt install -y build-essential debhelper autotools-dev automake libtool pkg-config
 
+RUN cat /pi/etc/apt/sources.list |sed s/^deb/deb-src/ >> /pi/etc/apt/sources.list
+
 VOLUME /work
 WORKDIR /work
