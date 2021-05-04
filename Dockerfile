@@ -2,7 +2,7 @@
 
 FROM debian AS pibuilder
 
-RUN apt update && apt install -y git binfmt-support qemu qemu-user-static debootstrap wget
+RUN apt update && apt install -y git binfmt-support qemu qemu-user-static debootstrap wget dput
 RUN wget http://archive.raspbian.org/raspbian.public.key -O - | apt-key add -q && \
   mkdir /pi && \
   qemu-debootstrap --keyring=/etc/apt/trusted.gpg --arch armhf buster /pi http://mirrordirector.raspbian.org/raspbian/
