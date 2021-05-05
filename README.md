@@ -1,6 +1,6 @@
 # pibuilder
 
-A docker-based chroot for building deb files
+A docker-based chroot for building pi deb files
 
 ## usage
 
@@ -10,6 +10,8 @@ There are 2 dirs built-in:
 - `/work` - volume-mount this to share scripts & output with the container
 
 **Example**
+
+I want to make a deb of SDL that has the sweet framebuffer acceleration built-in.
 
 Make a file called `buildsdl.sh` in current dir:
 ```sh
@@ -23,8 +25,8 @@ wget https://www.libsdl.org/release/SDL2-2.0.14.tar.gz
 tar -xvzf SDL2-2.0.14.tar.gz
 
 cat << EOF | chroot /pi
-apt update
-apt build-dep -y libsdl2
+apt-get update
+apt-get build-dep -y libsdl2
 cd /work/out/SDL2-2.0.14
 DEB_CONFIGURE_EXTRA_FLAGS="--enable-video-kmsdrm --host=armv7l-raspberry-linux-gnueabihf --disable-pulseaudio --disable-esd --disable-video-mir --disable-video-wayland --disable-video-x11 --disable-video-opengl" dpkg-buildpackage -us -uc -j4
 EOF
